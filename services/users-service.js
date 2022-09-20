@@ -8,6 +8,12 @@ async function getUsers() {
   return users;
 }
 
+async function getUser(user) {
+  const usersCollection = await dbService.getCollection('users');
+  const existingUser = await usersCollection.findOne({ email: user.email });
+  return existingUser;
+}
+
 async function createUser(user) {
   console.log('user service backend');
   const collection = await dbService.getCollection('users');
@@ -28,5 +34,6 @@ async function createUser(user) {
 
 module.exports = {
   getUsers,
+  getUser,
   createUser,
 };

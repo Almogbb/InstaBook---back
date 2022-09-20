@@ -27,6 +27,7 @@ async function signUp(req, res, next) {
     name: user.name,
     email: user.email,
     password: hashedPassword,
+    createdAt: user.createdAt,
   };
   const savedUser = await userService.createUser(userToSave);
   console.log('savedUser with id', savedUser);
@@ -41,13 +42,51 @@ async function signUp(req, res, next) {
   const createdNewUser = {
     _id: savedUser._id,
     name: savedUser.name,
+    createdAt: savedUser.createdAt,
   };
   console.log('createdNewUser', createdNewUser);
   res.status(200).json(createdNewUser);
 }
 
+async function login(req, res, next) {
+  try {
+    const loggedUser = req.body;
+    console.log('loggedUser', loggedUser);
+    const loadedUser = await userService.getUser(loggedUser);
+    // if (!existingUser) {
+    //   const error = new Error('')
+    // }
+    console.log('found user in DB', loadedUser);
+    const isPasswordCorrect = await bcrypt.compare(
+      loggedUser.password,
+      loadedUser.password
+    );
+
+    if (!isPasswordCorrect) {
+      const error = new Error('Email or password is incorrect');
+      throw error;
+    }
+
+    const token = jwt.sign(
+      {
+        email: loadedUser.email,
+        userId: loadedUser._id,
+      },
+      'superSecretPassword',
+      { expiresIn: '1h' }
+    );
+
+    delete loadedUser.password;
+
+    res.status(200).json({ token, loadedUser });
+  } catch (err) {
+    console.log('Email or password is incorrect', err);
+  }
+}
+
 module.exports = {
   signUp,
   getUsers,
+  login,
   // addUser,
 };
