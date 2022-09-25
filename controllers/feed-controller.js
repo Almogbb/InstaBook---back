@@ -11,6 +11,7 @@ async function addPost(req, res, next) {
     _id: post._id,
     title: post.title,
     content: post.content,
+    image: post.image,
     createdAt: post.createdAt,
     createdByUserId: ObjectId(post.createdBy),
   };
