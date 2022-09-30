@@ -8,6 +8,18 @@ async function getUsers(req, res, next) {
   res.status(200).json(users);
 }
 
+async function addGuestUser(req, res, next) {
+  const guestUser = req.body;
+  const userToSave = {
+    name: guestUser.name,
+    email: guestUser.email,
+    posts: guestUser.posts,
+  };
+  const savedGuestUser = await userService.createUser(userToSave);
+  console.log('savedGuestUser', savedGuestUser);
+  res.status(200).json(savedGuestUser);
+}
+
 // async function signUp(req, res, next) {
 //   // const name = req.body.name;
 //   // const email = req.body.email;
@@ -88,5 +100,5 @@ module.exports = {
   signUp,
   getUsers,
   login,
-  // addUser,
+  addGuestUser,
 };
