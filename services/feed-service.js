@@ -1,6 +1,12 @@
 const dbService = require('./db-service');
 // const ObjectId = require('mongodb').ObjectId;
 
+async function getPosts() {
+  const postsCollection = await dbService.getCollection('posts');
+  const posts = await postsCollection.find().toArray();
+  return posts;
+}
+
 async function addPost(post) {
   // console.log('userToUpdate', userPostsUpdate);
   const postsCollection = await dbService.getCollection('posts');
@@ -55,8 +61,34 @@ async function updatePostById(post) {
   return post;
 }
 
+async function updateLoveStatus(post) {
+  const postsCollection = await dbService.getCollection('posts');
+  const postToEdit = await postsCollection.findOne({ _id: post._id });
+  await postsCollection.updateOne(
+    { _id: post._id },
+    { $set: { isLove: post.isLoveStatus } }
+  );
+
+  const usersCollection = await dbService.getCollection('users');
+  await usersCollection.updateOne(
+    {
+      _id: postToEdit.createdByUserId,
+      'posts._id': post._id,
+    },
+    {
+      $set: {
+        'posts.$.isLove': post.isLoveStatus,
+      },
+    }
+  );
+
+  return post;
+}
+
 module.exports = {
+  getPosts,
   addPost,
   removePostById,
   updatePostById,
+  updateLoveStatus,
 };

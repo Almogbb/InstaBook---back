@@ -1,8 +1,9 @@
 const feedService = require('../services/feed-service');
 const ObjectId = require('mongodb').ObjectId;
 
-function getPosts(req, res, next) {
-  res.json('hello from backend');
+async function getPosts(req, res, next) {
+  const posts = await feedService.getPosts();
+  res.status(200).json(posts);
 }
 
 async function addPost(req, res, next) {
@@ -22,12 +23,6 @@ async function addPost(req, res, next) {
   res.status(201).json(addedPost);
 }
 
-async function removePostById(req, res, next) {
-  const postId = req.params.postId;
-  await feedService.removePostById(postId);
-  res.status(200).json(postId);
-}
-
 async function updatePost(req, res, next) {
   const postToEdit = req.body;
   // console.log('postToEdit', postToEdit);
@@ -35,9 +30,31 @@ async function updatePost(req, res, next) {
   res.status(201).json(editedPost);
 }
 
+async function removePostById(req, res, next) {
+  const postId = req.params.postId;
+  await feedService.removePostById(postId);
+  res.status(200).json(postId);
+}
+
+async function updateLoveStatus(req, res, next) {
+  const _id = req.body._id;
+  const isLoveStatus = req.body.isLove;
+
+  // console.log('postId', postId);
+  // console.log('isLoveStatus', isLoveStatus);
+
+  const loveStatus = await feedService.updateLoveStatus({
+    _id,
+    isLoveStatus,
+  });
+
+  res.status(201).json(loveStatus);
+}
+
 module.exports = {
   getPosts,
   addPost,
   removePostById,
   updatePost,
+  updateLoveStatus,
 };
