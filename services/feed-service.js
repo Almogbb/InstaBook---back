@@ -46,6 +46,7 @@ async function updatePostById(post) {
       $set: {
         'posts.$.title': post.title,
         'posts.$.content': post.content,
+        'posts.$.isLove': post.isLove,
         'posts.$.updatedAt': post.updatedAt,
       },
     }
