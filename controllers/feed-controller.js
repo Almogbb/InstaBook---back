@@ -2,53 +2,78 @@ const feedService = require('../services/feed-service');
 const ObjectId = require('mongodb').ObjectId;
 
 async function getPosts(req, res, next) {
-  const posts = await feedService.getPosts();
-  res.status(200).json(posts);
+  try {
+    const posts = await feedService.getPosts();
+    res.status(200).json(posts);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 }
 
 async function addPost(req, res, next) {
-  const post = req.body;
-  const postToAdd = {
-    _id: post._id,
-    title: post.title,
-    content: post.content,
-    image: post.image,
-    isLove: post.isLove,
-    createdAt: post.createdAt,
-    createdByUserId: ObjectId(post.createdBy),
-  };
-  console.log('post to add', postToAdd);
-  const addedPost = await feedService.addPost(postToAdd);
-  console.log('return post', addedPost);
-  res.status(201).json(addedPost);
+  try {
+    const post = req.body;
+    const postToAdd = {
+      _id: post._id,
+      title: post.title,
+      content: post.content,
+      image: post.image,
+      isLove: post.isLove,
+      createdAt: post.createdAt,
+      createdByUserId: ObjectId(post.createdBy),
+    };
+    console.log('post to add', postToAdd);
+    const addedPost = await feedService.addPost(postToAdd);
+    console.log('return post', addedPost);
+    res.status(201).json(addedPost);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 }
 
 async function updatePost(req, res, next) {
-  const postToEdit = req.body;
-  // console.log('postToEdit', postToEdit);
-  const editedPost = await feedService.updatePostById(postToEdit);
-  res.status(201).json(editedPost);
+  try {
+    const postToEdit = req.body;
+    // console.log('postToEdit', postToEdit);
+    const editedPost = await feedService.updatePostById(postToEdit);
+    res.status(201).json(editedPost);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 }
 
 async function removePostById(req, res, next) {
-  const postId = req.params.postId;
-  await feedService.removePostById(postId);
-  res.status(200).json(postId);
+  try {
+    const postId = req.params.postId;
+    await feedService.removePostById(postId);
+    res.status(200).json(postId);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 }
 
 async function updateLoveStatus(req, res, next) {
-  const _id = req.body._id;
-  const isLoveStatus = req.body.isLove;
+  try {
+    const _id = req.body._id;
+    const isLoveStatus = req.body.isLove;
 
-  // console.log('postId', postId);
-  // console.log('isLoveStatus', isLoveStatus);
+    // console.log('postId', postId);
+    // console.log('isLoveStatus', isLoveStatus);
 
-  const loveStatus = await feedService.updateLoveStatus({
-    _id,
-    isLoveStatus,
-  });
+    const loveStatus = await feedService.updateLoveStatus({
+      _id,
+      isLoveStatus,
+    });
 
-  res.status(201).json(loveStatus);
+    res.status(201).json(loveStatus);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 }
 
 module.exports = {
