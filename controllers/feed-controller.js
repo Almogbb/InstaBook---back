@@ -21,7 +21,8 @@ async function addPost(req, res, next) {
       image: post.image,
       isLove: post.isLove,
       createdAt: post.createdAt,
-      createdByUserId: ObjectId(post.createdBy),
+      createdByUserId: ObjectId(post.createdByUserId),
+      createdByUserName: post.createdByUserName,
     };
     console.log('post to add', postToAdd);
     const addedPost = await feedService.addPost(postToAdd);
