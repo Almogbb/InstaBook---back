@@ -110,10 +110,33 @@ async function updateLoveStatus(post) {
   }
 }
 
+async function addComment(comment) {
+  const postsCollection = await dbService.getCollection('posts');
+  const postToEdit = await postsCollection.findOne({ _id: comment.postId });
+  postsCollection.updateOne(
+    { _id: comment.postId },
+    { $push: { comments: comment } }
+  );
+
+  const usersCollection = await dbService.getCollection('users');
+  await usersCollection.updateOne(
+    {
+      _id: postToEdit.createdByUserId,
+      'posts._id': comment.postId,
+    },
+    {
+      $push: {
+        'posts.$.comments': comment,
+      },
+    }
+  );
+}
+
 module.exports = {
   getPosts,
   addPost,
   removePostById,
   updatePostById,
   updateLoveStatus,
+  addComment,
 };

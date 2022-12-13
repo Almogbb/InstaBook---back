@@ -8,6 +8,8 @@ router.get('/posts', feedController.getPosts);
 
 router.post('/post', feedController.addPost);
 
+router.post('/:postId/comments', feedController.createComment);
+
 router.post('/post/:postId', feedController.updateLoveStatus);
 
 router.put('/post/:postId', feedController.updatePost);

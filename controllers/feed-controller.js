@@ -20,6 +20,7 @@ async function addPost(req, res, next) {
       content: post.content,
       image: post.image,
       isLove: post.isLove,
+      comments: post.comments,
       createdAt: post.createdAt,
       createdByUserId: ObjectId(post.createdByUserId),
       createdByUserName: post.createdByUserName,
@@ -77,10 +78,25 @@ async function updateLoveStatus(req, res, next) {
   }
 }
 
+async function createComment(req, res, next) {
+  try {
+    const postId = req.params.postId;
+    const commentToAdd = req.body;
+
+    console.log('postId', postId);
+    console.log('commentToAdd', commentToAdd);
+
+    const addedComment = await feedService.addComment(commentToAdd);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 module.exports = {
   getPosts,
   addPost,
   removePostById,
   updatePost,
   updateLoveStatus,
+  createComment,
 };
